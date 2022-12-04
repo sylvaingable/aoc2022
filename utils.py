@@ -31,3 +31,8 @@ def batchify(iterable: Iterable, batch_size: int) -> Generator[List, None, None]
         if cursor % batch_size == 0:
             yield batch
             batch = []
+
+
+def count_if(iterable: Iterable, predicate: Callable[[Any], bool] = bool) -> int:
+    """Counts the number of elements from the iterable matching the predicate."""
+    return sum(1 for el in iterable if predicate(el))
