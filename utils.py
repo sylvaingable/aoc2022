@@ -1,4 +1,4 @@
-from typing import Any, Callable, Generator, Iterable, List
+from typing import Any, Callable, Generator, Iterable
 
 
 def parse_input(
@@ -10,7 +10,7 @@ def parse_input(
         return tuple(parse_fn(line) for line in lines)
 
 
-def batchify(iterable: Iterable, batch_size: int) -> Generator[List, None, None]:
+def batchify(iterable: Iterable, batch_size: int) -> Generator[list, None, None]:
     """
     Yields batches of batch_size from the iterable. The last batch will be
     smaller than batch_size if the iterable length isn't a multiple of batch_size.
@@ -36,3 +36,11 @@ def batchify(iterable: Iterable, batch_size: int) -> Generator[List, None, None]
 def count_if(iterable: Iterable, predicate: Callable[[Any], bool] = bool) -> int:
     """Counts the number of elements from the iterable matching the predicate."""
     return sum(1 for el in iterable if predicate(el))
+
+
+def transpose(array) -> tuple:
+    return tuple(zip(*array))
+
+
+def cat(iterable: Iterable[str]) -> str:
+    return "".join(str(el) for el in iterable)
