@@ -1,9 +1,12 @@
-from typing import Any, Callable, Generator, Iterable
+from itertools import chain
+from typing import Any, Callable, Generator, Iterable, TypeVar
+
+T = TypeVar("T")
 
 
 def parse_input(
-    path: str = "./input", sep: str = "\n", parse_fn: Callable[[str], Any] = str
-) -> tuple:
+    path: str = "./input", sep: str = "\n", parse_fn: Callable[[str], T] = str
+) -> tuple[T, ...]:
     """Returns parsed lines from an input file."""
     with open(path, "r") as f:
         lines = f.read().rstrip().split(sep)
@@ -44,3 +47,6 @@ def transpose(array) -> tuple:
 
 def cat(iterable: Iterable[str]) -> str:
     return "".join(str(el) for el in iterable)
+
+
+flatten = chain.from_iterable
