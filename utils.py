@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, TypeVar
+from typing import Any, Callable, Generator, Iterable, Sequence, TypeVar
 
 T = TypeVar("T")
 
@@ -41,12 +41,37 @@ def count_if(iterable: Iterable, predicate: Callable[[Any], bool] = bool) -> int
     return sum(1 for el in iterable if predicate(el))
 
 
-def transpose(array) -> tuple:
-    return tuple(zip(*array))
-
-
 def cat(iterable: Iterable[str]) -> str:
     return "".join(str(el) for el in iterable)
 
 
 flatten = chain.from_iterable
+
+
+###########################
+# Array-related functions #
+###########################
+
+
+def transpose(array: Sequence[Sequence[T]]) -> tuple[tuple[T]]:
+    return tuple(zip(*array))
+
+
+def reverse(array: Sequence[Sequence[T]]) -> tuple[tuple[T]]:
+    return tuple(tuple(reversed(line)) for line in array)
+
+
+def overlay(
+    *arrays: Sequence[Sequence[T]], reducer: Callable[[Iterable[T]], T]
+) -> tuple[tuple[T]]:
+    """
+    Merges arrays of identical size in single one, reducing values at the position
+    with the reducer function.
+    E.g.:
+    >>> overlay([[1, 2], [3, 4]], [[1, 2], [3, 4]], reducer=sum)
+    ((2, 4), (6, 8))
+    """
+    return tuple(
+        tuple(reducer(values) for values in zip(*merged_lines))
+        for merged_lines in zip(*arrays)
+    )
