@@ -13,6 +13,11 @@ def parse_input(
         return tuple(parse_fn(line) for line in lines)
 
 
+###################
+# Iteration utils #
+###################
+
+
 def batchify(iterable: Iterable, batch_size: int) -> Generator[list, None, None]:
     """
     Yields batches of batch_size from the iterable. The last batch will be
@@ -46,6 +51,30 @@ def cat(iterable: Iterable[str]) -> str:
 
 
 flatten = chain.from_iterable
+
+
+def sliding_window(
+    iterable: Iterable[T], size: int = 1
+) -> Generator[tuple[T, ...], None, None]:
+    iterator = iter(iterable)
+    try:
+        window = tuple(next(iterator) for _ in range(size))
+    except RuntimeError:
+        raise ValueError("size must be less than or equal to iterable length")
+    yield window
+    for next_element in iterator:
+        window = window[1:] + (next_element,)
+        yield window
+
+
+def assert_never(value):
+    """
+    Raises an AssertionError for the provided value.
+
+    It should be use when matching against known values to raise an exception
+    for unexpected values (typically in a final else clause).
+    """
+    raise AssertionError(f"Unhandled value: {value}")
 
 
 ###########################
