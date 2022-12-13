@@ -10,8 +10,6 @@ from utils import parse_input
 
 class TestDay1(unittest.TestCase):
     def test_part_1(self):
-        from rich import print
-
         grid = parse_input("test_input", parse_fn=parse_line)
         self.assertEqual(solve_part_1(grid), 21)
 
