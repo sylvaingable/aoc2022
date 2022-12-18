@@ -13,6 +13,16 @@ def parse_input(
         return tuple(parse_fn(line) for line in lines)
 
 
+def assert_never(value):
+    """
+    Raises an AssertionError for the provided value.
+
+    It should be use when matching against known values to raise an exception
+    for unexpected values (typically in a final else clause).
+    """
+    raise AssertionError(f"Unhandled value: {value}")
+
+
 ###################
 # Iteration utils #
 ###################
@@ -65,16 +75,6 @@ def sliding_window(
     for next_element in iterator:
         window = window[1:] + (next_element,)
         yield window
-
-
-def assert_never(value):
-    """
-    Raises an AssertionError for the provided value.
-
-    It should be use when matching against known values to raise an exception
-    for unexpected values (typically in a final else clause).
-    """
-    raise AssertionError(f"Unhandled value: {value}")
 
 
 ###########################
