@@ -1,7 +1,9 @@
+import re
 from itertools import chain
 from typing import Any, Callable, Generator, Iterable, Sequence, TypeVar
 
 T = TypeVar("T")
+INT_REGEX = re.compile(r"(\d+)")
 
 
 def parse_input(
@@ -11,6 +13,10 @@ def parse_input(
     with open(path, "r") as f:
         lines = f.read().rstrip().split(sep)
         return tuple(parse_fn(line) for line in lines)
+
+
+def parse_ints(text: str) -> tuple[int, ...]:
+    return tuple(int(m) for m in INT_REGEX.findall(text))
 
 
 def assert_never(value):
@@ -28,7 +34,7 @@ def assert_never(value):
 ###################
 
 
-def batchify(iterable: Iterable, batch_size: int) -> Generator[list, None, None]:
+def batchify(iterable: Iterable[T], batch_size: int) -> Generator[list[T], None, None]:
     """
     Yields batches of batch_size from the iterable. The last batch will be
     smaller than batch_size if the iterable length isn't a multiple of batch_size.
@@ -104,3 +110,18 @@ def overlay(
         tuple(reducer(values) for values in zip(*merged_lines))
         for merged_lines in zip(*arrays)
     )
+
+
+################################
+# Point/Grid related functions #
+################################
+
+Point = tuple[int, int]
+
+
+def X(point: Point) -> int:
+    return point[0]
+
+
+def Y(point: Point) -> int:
+    return point[1]
