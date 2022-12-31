@@ -3,7 +3,7 @@ from itertools import chain
 from typing import Any, Callable, Generator, Iterable, Sequence, TypeVar
 
 T = TypeVar("T")
-INT_REGEX = re.compile(r"(\d+)")
+INT_REGEX = re.compile(r"(-*\d+)")
 
 
 def parse_input(
