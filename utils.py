@@ -1,6 +1,18 @@
+from __future__ import annotations
+
 import re
 from itertools import chain
-from typing import Any, Callable, Generator, Iterable, Sequence, TypeVar
+from typing import (
+    Any,
+    Callable,
+    Container,
+    Generator,
+    Hashable,
+    Iterable,
+    Protocol,
+    Sequence,
+    TypeVar,
+)
 
 T = TypeVar("T")
 INT_REGEX = re.compile(r"(-*\d+)")
@@ -66,6 +78,14 @@ def cat(iterable: Iterable[str]) -> str:
     return "".join(str(el) for el in iterable)
 
 
+def first(iterable: Iterable[T], default: T | None = None) -> T | None:
+    return next(iter(iterable), default)
+
+
+def last(seq: Sequence[T], default: T | None = None) -> T | None:
+    return next(reversed(seq), default)
+
+
 flatten = chain.from_iterable
 
 
@@ -125,3 +145,50 @@ def X(point: Point) -> int:
 
 def Y(point: Point) -> int:
     return point[1]
+
+
+############################
+# Graphs related functions #
+############################
+
+
+class Node(Protocol):
+    neighbors: Iterable[Node]
+
+
+Graph = dict[Hashable, Node]
+
+
+def bfs_shortest_path(graph: Graph, start: Hashable, end: Hashable) -> list[Hashable]:
+    """
+    Finds the shortest path between start and end nodes in the graph using a
+    breadth-first search algorithm (https://www.wikiwand.com/en/Breadth-first_search).
+    """
+    if start == end:
+        return [start]
+    queue = [[start, []]]
+    visited = set()
+    while queue:
+        next_node, path = queue.pop(0)
+        visited.add(next_node)
+        for neighbor in graph[next_node].neighbors:
+            if neighbor == end:
+                return path + [next_node, neighbor]
+            if neighbor in visited:
+                continue
+            neighbor_path = path + [next_node]
+            # Don't add a path to the queue if there's already a shorter or equally
+            # long path to he same node (we're only interested by the length
+            # of the final path between the start and the end nodes.)
+            idx, known_path = next(
+                (
+                    (idx, path)
+                    for idx, (point, path) in enumerate(queue)
+                    if point == neighbor
+                ),
+                (None, []),
+            )
+            if idx is not None and len(known_path) <= len(neighbor_path):
+                continue
+            queue.append([neighbor, neighbor_path])
+    return []
